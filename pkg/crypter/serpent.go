@@ -3,7 +3,6 @@ package crypter
 import (
 	"bytes"
 	"crypto/rand"
-	"fmt"
 	"log"
 
 	"github.com/enceve/crypto/serpent"
@@ -12,7 +11,7 @@ import (
 func SerpentEncrypt(data []byte, key []byte) ([]byte, error) {
 	cipher, err := serpent.NewCipher(key)
 	if err != nil {
-		return nil, fmt.Errorf("Error creating cipher block [SerpentEncrypt]: %s", err)
+		return nil, err
 	}
 	padding := 16 - (len(data) % 16)
 	paddedData := append(data, bytes.Repeat([]byte{byte(padding)}, padding)...)
@@ -26,10 +25,10 @@ func SerpentEncrypt(data []byte, key []byte) ([]byte, error) {
 func SerpentDecrypt(data []byte, key []byte) ([]byte, error) {
 	cipher, err := serpent.NewCipher(key)
 	if err != nil {
-		return nil, fmt.Errorf("Error creating cipher block [SerpentDecrypt]: %s", err)
+		return nil, err
 	}
 	if len(data)%16 != 0 {
-		return nil, fmt.Errorf("Failed to decrypt data: invalid block size")
+		return nil, err
 	}
 	decryptedBytes := make([]byte, len(data))
 	for bs := 0; bs < len(data); bs += 16 {
@@ -38,15 +37,6 @@ func SerpentDecrypt(data []byte, key []byte) ([]byte, error) {
 	padding := int(decryptedBytes[len(decryptedBytes)-1])
 	return decryptedBytes[:len(decryptedBytes)-padding], nil
 }
-
-// func removePadding(data []byte) []byte {
-// 	for i := len(data) - 1; i >= 0; i-- {
-// 		if data[i] != 0x00 {
-// 			return data[:i+1]
-// 		}
-// 	}
-// 	return nil
-// }
 
 func GenKey() ([]byte, error) {
 	key := make([]byte, 32)

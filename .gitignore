@@ -2,8 +2,6 @@
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 # Binaries for programs and plugins
-cryptbin
-key
 *.exe
 *.exe~
 *.dll
@@ -21,3 +19,8 @@ key
 
 # Go workspace file
 go.work
+
+# goldr files
+stub_gen.go
+cryptbin
+key

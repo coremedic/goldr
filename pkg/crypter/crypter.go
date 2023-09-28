@@ -1,32 +1,20 @@
-package main
+package crypter
 
 import (
 	"bytes"
-	_ "embed"
 	"fmt"
-	"goldr/crypter"
 	"log"
 	"os"
-	"path"
 )
 
-func main() {
-	if len(os.Args) < 2 {
-		log.Fatal("Usage: go run main.go [path to binary file]")
-	}
-
-	binPath := os.Args[1]
-	bin, err := os.ReadFile(binPath)
-	if err != nil {
-		log.Fatalf("Could not read file: %s", err.Error())
-	}
+func CryptBin(bin []byte) {
 
 	fmt.Printf("Original binary size: %d bytes\n", len(bin))
-	key, err := crypter.GenKey()
+	key, err := GenKey()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	cryptbin, err := crypter.SerpentEncrypt(bin, key)
+	cryptbin, err := SerpentEncrypt(bin, key)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -35,12 +23,12 @@ func main() {
 	if !ok {
 		os.Exit(1)
 	}
-	os.WriteFile(path.Join("stub", "cryptbin"), cryptbin, 0777)
-	os.WriteFile(path.Join("stub", "key"), key, 0777)
+	os.WriteFile("./cryptbin", cryptbin, 0777)
+	os.WriteFile("./key", key, 0777)
 }
 
 func verify(cryptbin, originalBin, key []byte) bool {
-	decryptedBin, err := crypter.SerpentDecrypt(cryptbin, key)
+	decryptedBin, err := SerpentDecrypt(cryptbin, key)
 	if err != nil {
 		log.Fatalf("Decryption failed: %s", err.Error())
 		return false
