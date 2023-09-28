@@ -23,8 +23,8 @@ func CryptBin(bin []byte) {
 	if !ok {
 		os.Exit(1)
 	}
-	os.WriteFile("./cryptbin", cryptbin, 0777)
-	os.WriteFile("./key", key, 0777)
+	os.WriteFile("./.tmp/cryptbin", cryptbin, 0777)
+	os.WriteFile("./.tmp/key", key, 0777)
 }
 
 func verify(cryptbin, originalBin, key []byte) bool {

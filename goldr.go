@@ -7,7 +7,7 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/coremedic/goldr/crypter"
+	"github.com/coremedic/goldr/pkg/crypter"
 
 	"github.com/spf13/cobra"
 )
