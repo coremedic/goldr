@@ -6,6 +6,7 @@ require (
 	github.com/amenzhinsky/go-memexec v0.7.1
 	github.com/enceve/crypto v0.0.0-20160707101852-34d48bb93815
 	github.com/spf13/cobra v1.7.0
+	github.com/coremedic/goldr/pkg/crypter v0.1
 )
 
 require (
