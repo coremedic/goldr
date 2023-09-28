@@ -5,7 +5,7 @@ import (
 	//{{if .Debug}}
 	"log"
 	//{{end}}
-	"goldr/crypter"
+	"github.com/coremedic/goldr/crypter"
 
 	//{{if .Memexec}}
 	"os/exec"
