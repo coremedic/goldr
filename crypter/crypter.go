@@ -2,58 +2,42 @@ package crypter
 
 import (
 	"bytes"
-	"crypto/rand"
 	"fmt"
 	"log"
-
-	"github.com/enceve/crypto/serpent"
+	"os"
 )
 
-func SerpentEncrypt(data []byte, key []byte) ([]byte, error) {
-	cipher, err := serpent.NewCipher(key)
+func CryptBin(bin []byte) {
+
+	fmt.Printf("Original binary size: %d bytes\n", len(bin))
+	key, err := GenKey()
 	if err != nil {
-		return nil, fmt.Errorf("Error creating cipher block [SerpentEncrypt]: %s", err)
+		log.Fatal(err.Error())
 	}
-	padding := 16 - (len(data) % 16)
-	paddedData := append(data, bytes.Repeat([]byte{byte(padding)}, padding)...)
-	encDataBytes := make([]byte, len(paddedData))
-	for bs := 0; bs < len(paddedData); bs += 16 {
-		cipher.Encrypt(encDataBytes[bs:], paddedData[bs:bs+16])
+	cryptbin, err := SerpentEncrypt(bin, key)
+	if err != nil {
+		log.Fatal(err.Error())
 	}
-	return encDataBytes, nil
+	fmt.Printf("Encrypted binary size: %d bytes\n", len(cryptbin))
+	ok := verify(cryptbin, bin, key)
+	if !ok {
+		os.Exit(1)
+	}
+	os.WriteFile("./cryptbin", cryptbin, 0777)
+	os.WriteFile("./key", key, 0777)
 }
 
-func SerpentDecrypt(data []byte, key []byte) ([]byte, error) {
-	cipher, err := serpent.NewCipher(key)
+func verify(cryptbin, originalBin, key []byte) bool {
+	decryptedBin, err := SerpentDecrypt(cryptbin, key)
 	if err != nil {
-		return nil, fmt.Errorf("Error creating cipher block [SerpentDecrypt]: %s", err)
+		log.Fatalf("Decryption failed: %s", err.Error())
+		return false
 	}
-	if len(data)%16 != 0 {
-		return nil, fmt.Errorf("Failed to decrypt data: invalid block size")
+	if bytes.Equal(originalBin, decryptedBin) {
+		fmt.Println("Verification succeeded: original and decrypted binaries match.")
+		return true
+	} else {
+		fmt.Println("Verification failed: original and decrypted binaries do not match.")
+		return false
 	}
-	decryptedBytes := make([]byte, len(data))
-	for bs := 0; bs < len(data); bs += 16 {
-		cipher.Decrypt(decryptedBytes[bs:], data[bs:bs+16])
-	}
-	padding := int(decryptedBytes[len(decryptedBytes)-1])
-	return decryptedBytes[:len(decryptedBytes)-padding], nil
-}
-
-// func removePadding(data []byte) []byte {
-// 	for i := len(data) - 1; i >= 0; i-- {
-// 		if data[i] != 0x00 {
-// 			return data[:i+1]
-// 		}
-// 	}
-// 	return nil
-// }
-
-func GenKey() ([]byte, error) {
-	key := make([]byte, 32)
-	_, err := rand.Read(key)
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
-	}
-	return key, nil
 }
