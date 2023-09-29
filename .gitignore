@@ -21,6 +21,7 @@
 go.work
 
 # goldr files
+.tmp
 stub_gen.go
 cryptbin
 key

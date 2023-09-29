@@ -7,7 +7,7 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/coremedic/goldr/crypter"
+	"github.com/coremedic/goldr/pkg/crypter"
 
 	"github.com/spf13/cobra"
 )
@@ -15,6 +15,7 @@ import (
 // stub template config
 type Config struct {
 	Memexec bool
+	Unhook  bool
 	Debug   bool
 }
 
@@ -33,6 +34,7 @@ var (
 )
 
 func init() {
+	rootCmd.PersistentFlags().BoolVarP(&config.Unhook, "unhook", "U", false, "Unhook dlls at runtime")
 	rootCmd.PersistentFlags().BoolVarP(&config.Debug, "debug", "D", false, "Enable debug mode")
 }
 
@@ -59,7 +61,7 @@ func run(cmd *cobra.Command, args []string) {
 	// build config for stub
 	config.Memexec = true
 
-	outputFile, err := os.Create("stub_gen.go")
+	outputFile, err := os.Create(".tmp/stub_gen.go")
 	if err != nil {
 		panic(err)
 	}
@@ -72,6 +74,9 @@ func run(cmd *cobra.Command, args []string) {
 }
 
 func main() {
+	if err := os.MkdirAll(".tmp", 0777); err != nil {
+		log.Fatal(err.Error())
+	}
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
