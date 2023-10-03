@@ -1,7 +1,7 @@
 <div align="center">
   <h1>GoLdr</h1>
   <br/>
-  <p><i>A simple buildtime payload obfuscator</i></p>
+  <p><i>A simple payload loader/dropper written in golang</i></p>
   <br/>
 </div>
 
@@ -11,9 +11,5 @@ The encrypted binary and its respective key are embeded into a stub which is com
 On execution, the stub decrypts the embeded payload using the embeded key and executes the payload in memory. 
 
 # Usage
-Add your .exe binary to the root folder of the repo rename it "bin.exe" \
-Run:
-```sh
-go generate
-```
-Your obfuscated binary will be generated as "out.exe"
+WORK IN PROGRESS \ 
+GoLdr is not in a usable state at the moment

@@ -5,8 +5,6 @@ import (
 	"unsafe"
 )
 
-func GetNtdllBase() uintptr
-
 func resolveSyscall64(funcName string) uintptr {
 	var libraryBase = GetNtdllBase()
 

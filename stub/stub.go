@@ -55,6 +55,9 @@ func main() {
 		//{{end}}
 		return
 	}
+	//{{if .Debug}}
+	evasion.Debug()
+	//{{end}}
 	//{{end}}
 
 	//{{if .Spawn}}
