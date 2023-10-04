@@ -5,6 +5,42 @@ import (
 )
 
 /*
+* Define Windows types
+ */
+type (
+	// Win32 BOOL
+	BOOL uint32
+	// Win32 BOOLEAN
+	BOOLEAN byte
+	// Win32 BYTE
+	BYTE byte
+	// 32 bit WORD
+	DWORD uint32
+	// 64 bit WORD
+	DWORD64 uint64
+	// Win32 HANDLE
+	HANDLE uintptr
+	// Win32 LocalHandle
+	HLOCAL uintptr
+	// int64
+	LARGE_INTEGER int64
+	// int32
+	LONG int32
+	// LPVOID pointer
+	LPVOID uintptr
+	// Win32 SIZE_T
+	SIZE_T uintptr
+	// Unsigned int32
+	UINT uint32
+	// Unsigned int pointer
+	ULONG_PTR uintptr
+	// Unsigned in64
+	ULONGLONG uint64
+	// 16 bit word
+	WORD uint16
+)
+
+/*
 * IMAGE_FILE_HEADER structure (winnt.h)
 * Represents the COFF header format
  */
@@ -70,4 +106,16 @@ type ImageExportDirectory struct {
 	AddressOfFunctions    uint32
 	AddressOfNames        uint32
 	AddressOfNameOrdinals uint32
+}
+
+/*
+* IMAGE_OPTIONAL_HEADER64 (winnt.h)
+* 64 bit optional header
+ */
+type ImageOptionalHeader64 struct {
+	Magic                WORD
+	MajorLinkerVersion   BYTE
+	MinorLinkerVersion   BYTE
+	SizeOfCode           DWORD
+	SizeOfInitalizedData DWORD
 }
