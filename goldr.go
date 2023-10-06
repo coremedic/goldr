@@ -23,14 +23,18 @@ type Config struct {
 var (
 	//go:embed stub/stub.go
 	stub []byte
+	//go:embed stub/go-mod
+	gomod []byte
+	//go:embed stub/go-sum
+	gosum []byte
 
 	config                 Config
 	mutuallyExclusiveFlags []*bool
 
 	rootCmd = &cobra.Command{
 		Use:   "goldr [binary]",
-		Short: "GoLdr is a simple build time payload obfuscator",
-		Long:  `GoLdr is a fast and flexible build time payload obfuscator written in golang`,
+		Short: "GoLdr is a simple PE loader/dropper",
+		Long:  `GoLdr is a fast and flexible PE loader/dropper written in golang`,
 		Run:   run,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			return checkFlags()
