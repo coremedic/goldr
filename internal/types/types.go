@@ -1,4 +1,4 @@
-package evasion
+package types
 
 import (
 	"debug/pe"

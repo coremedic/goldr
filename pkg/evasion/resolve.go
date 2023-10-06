@@ -3,20 +3,23 @@ package evasion
 import (
 	"debug/pe"
 	"unsafe"
+
+	"github.com/coremedic/goldr/internal/types"
+	"github.com/coremedic/goldr/pkg/syscalls"
 )
 
 func resolveSyscall64(funcName string) uintptr {
-	var libraryBase = GetNtdllBase()
+	var libraryBase = syscalls.GetNtdllBase()
 
-	dosHeader := (*ImageDosHeader)(unsafe.Pointer(&(*[64]byte)(unsafe.Pointer(libraryBase))[:][0]))
+	dosHeader := (*types.ImageDosHeader)(unsafe.Pointer(&(*[64]byte)(unsafe.Pointer(libraryBase))[:][0]))
 
 	offset := (libraryBase) + uintptr(dosHeader.ELfanew)
-	imageNTHeaders := (*ImageNTHeaders64)(unsafe.Pointer(&(*[264]byte)(unsafe.Pointer(offset))[:][0]))
+	imageNTHeaders := (*types.ImageNTHeaders64)(unsafe.Pointer(&(*[264]byte)(unsafe.Pointer(offset))[:][0]))
 
 	exportDirectoryRVA := imageNTHeaders.OptionalHeader.DataDirectory[pe.IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress
 
 	offset = (libraryBase) + uintptr(exportDirectoryRVA)
-	imageExportDirectory := (*ImageExportDirectory)(unsafe.Pointer(&(*[256]byte)(unsafe.Pointer(offset))[:][0]))
+	imageExportDirectory := (*types.ImageExportDirectory)(unsafe.Pointer(&(*[256]byte)(unsafe.Pointer(offset))[:][0]))
 
 	offset = (libraryBase) + uintptr(imageExportDirectory.AddressOfFunctions)
 	addresOfFunctionsRVA := (*uint)(unsafe.Pointer(&(*[4]byte)(unsafe.Pointer(offset))[:][0]))

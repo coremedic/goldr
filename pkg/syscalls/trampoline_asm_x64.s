@@ -1,7 +1,7 @@
 #include "textflag.h"
 
-// func getTrampoline(stubAddr uintptr) uintptr
-TEXT ·getTrampoline(SB),NOSPLIT,$0-8
+// func GetTrampoline(stubAddr uintptr) uintptr
+TEXT ·GetTrampoline(SB),NOSPLIT,$0-8
     MOVQ stubAddr+0(FP), AX
     MOVQ AX, R10
 

