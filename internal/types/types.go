@@ -1,9 +1,5 @@
 package types
 
-import (
-	"debug/pe"
-)
-
 /*
 * Define Windows types
  */
@@ -14,44 +10,57 @@ type (
 	BOOLEAN byte
 	// Win32 BYTE
 	BYTE byte
-	// 32 bit WORD
+	// 32 bit DWORD
 	DWORD uint32
-	// 64 bit WORD
+	// 64 bit DWORD
 	DWORD64 uint64
 	// Win32 HANDLE
 	HANDLE uintptr
 	// Win32 LocalHandle
 	HLOCAL uintptr
-	// int64
+	// 64 bit integer
 	LARGE_INTEGER int64
-	// int32
+	// 32 bit integer
 	LONG int32
 	// LPVOID pointer
 	LPVOID uintptr
 	// Win32 SIZE_T
 	SIZE_T uintptr
-	// Unsigned int32
+	// Unsigned 32 bit integer
 	UINT uint32
-	// Unsigned int pointer
+	// Unsigned integer pointer
 	ULONG_PTR uintptr
-	// Unsigned in64
+	// Unsigned 64 bit integer
 	ULONGLONG uint64
-	// 16 bit word
+	// 16 bit WORD
 	WORD uint16
 )
+
+const (
+	ImageNumberOfDirectoryEntries = 16
+	ImageDirectoryEntryImport     = 1
+	ImageDirectoryEntryBaseReloc  = 5
+)
+
+type _ImageDataDirectory struct {
+	VirtualAddress DWORD
+	Size           DWORD
+}
+
+type ImageDataDirectory _ImageDataDirectory
 
 /*
 * IMAGE_FILE_HEADER structure (winnt.h)
 * Represents the COFF header format
  */
 type ImageFileHeader struct {
-	Machine              uint16
-	NumberOfSections     uint16
-	TimeDateStamp        uint32
-	PointerToSymbolTable uint32
-	NumberOfSymbols      uint32
-	SizeOfOptionalHeader uint16
-	Characteristics      uint16
+	Machine              WORD
+	NumberOfSections     WORD
+	TimeDateStamp        DWORD
+	PointerToSymbolTable DWORD
+	NumberOfSymbols      DWORD
+	SizeOfOptionalHeader WORD
+	Characteristics      WORD
 }
 
 /*
@@ -59,9 +68,9 @@ type ImageFileHeader struct {
 * Represents the PE header format (64bit)
  */
 type ImageNTHeaders64 struct {
-	Signature      uint32
+	Signature      DWORD
 	FileHeader     ImageFileHeader
-	OptionalHeader pe.OptionalHeader64
+	OptionalHeader ImageOptionalHeader64
 }
 
 /*
@@ -69,25 +78,25 @@ type ImageNTHeaders64 struct {
 * Header at start of PE file
  */
 type ImageDosHeader struct {
-	EMagic    uint16
-	ECblp     uint16
-	ECp       uint16
-	ECrlc     uint16
-	ECparhdr  uint16
-	EMinalloc uint16
-	EMaxalloc uint16
-	ESs       uint16
-	ESp       uint16
-	ECsum     uint16
-	EIp       uint16
-	ECs       uint16
-	ELfarlc   uint16
-	EOvno     uint16
-	ERes      [4]uint16
-	EOemid    uint16
-	EOeminfo  uint16
-	ERes2     [10]uint16
-	ELfanew   uint32
+	EMagic    WORD
+	ECblp     WORD
+	ECp       WORD
+	ECrlc     WORD
+	ECparhdr  WORD
+	EMinalloc WORD
+	EMaxalloc WORD
+	ESs       WORD
+	ESp       WORD
+	ECsum     WORD
+	EIp       WORD
+	ECs       WORD
+	ELfarlc   WORD
+	EOvno     WORD
+	ERes      [4]WORD
+	EOemid    WORD
+	EOeminfo  WORD
+	ERes2     [10]WORD
+	ELfanew   DWORD
 }
 
 /*
@@ -95,17 +104,17 @@ type ImageDosHeader struct {
 * Export directory of PE file
  */
 type ImageExportDirectory struct {
-	Characteristics       uint32
-	TimeDateStamp         uint32
-	MajorVersion          uint16
-	MinorVersion          uint16
-	Name                  uint32
-	Base                  uint32
-	NumberOfFunctions     uint32
-	NumberOfNames         uint32
-	AddressOfFunctions    uint32
-	AddressOfNames        uint32
-	AddressOfNameOrdinals uint32
+	Characteristics       DWORD
+	TimeDateStamp         DWORD
+	MajorVersion          WORD
+	MinorVersion          WORD
+	Name                  DWORD
+	Base                  DWORD
+	NumberOfFunctions     DWORD
+	NumberOfNames         DWORD
+	AddressOfFunctions    DWORD
+	AddressOfNames        DWORD
+	AddressOfNameOrdinals DWORD
 }
 
 /*
@@ -113,9 +122,51 @@ type ImageExportDirectory struct {
 * 64 bit optional header
  */
 type ImageOptionalHeader64 struct {
-	Magic                WORD
-	MajorLinkerVersion   BYTE
-	MinorLinkerVersion   BYTE
-	SizeOfCode           DWORD
-	SizeOfInitalizedData DWORD
+	Magic                       WORD
+	MajorLinkerVersion          BYTE
+	MinorLinkerVersion          BYTE
+	SizeOfCode                  DWORD
+	SizeOfInitalizedData        DWORD
+	SizeOfUninitalizedData      DWORD
+	AddressOfEntryPoint         DWORD
+	BaseOfCode                  DWORD
+	BaseOfData                  DWORD
+	ImageBase                   DWORD
+	SectionAllignment           DWORD
+	FileAllignment              DWORD
+	MajorOperatingSystemVersion WORD
+	MinorOperatingSystemVersion WORD
+	MajorImageVersion           WORD
+	MinorImageVersion           WORD
+	MajorSubsystemVersion       WORD
+	MinorSubsystemVersion       WORD
+	Win32VersionValue           DWORD
+	SizeOfImage                 DWORD
+	SizeOfHeaders               DWORD
+	CheckSum                    DWORD
+	Subsytem                    WORD
+	DllCharacteristics          WORD
+	SizeOfStackReserve          DWORD
+	SizeOfStackCommit           DWORD
+	SizeOfHeapReserve           DWORD
+	SizeOfHeapCommit            DWORD
+	LoaderFlag                  DWORD
+	NumberOfRvaAndSizes         DWORD
+	DataDirectory               [ImageNumberOfDirectoryEntries]ImageDataDirectory
+}
+
+type ImageImportDescriptor struct {
+	OriginalFirstThunk DWORD
+	TimeDateStamp      DWORD
+	ForwarderChain     DWORD
+	Name               DWORD
+	FirstThunk         DWORD
+}
+
+type ImageThunkData struct {
+	AddressOfData uintptr
+}
+
+type OriginalImageThunkData struct {
+	Ordinal uint
 }
