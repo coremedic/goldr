@@ -36,10 +36,15 @@ type (
 	WORD uint16
 )
 
+func NT_SUCCESS(x uint32) bool {
+	return (x)&(1<<31) == 0
+}
+
 const (
 	ImageNumberOfDirectoryEntries = 16
 	ImageDirectoryEntryImport     = 1
 	ImageDirectoryEntryBaseReloc  = 5
+	ErrSyscallNotFound            = ((3 << 30) | (1 << 29) | 1) // Severity: STATUS_SEVERITY_ERROR, Custom: 1, Code:
 )
 
 type _ImageDataDirectory struct {

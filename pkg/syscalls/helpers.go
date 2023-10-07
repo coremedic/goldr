@@ -12,6 +12,7 @@ func GetExportsAddressOfFunctions(modAddr uintptr, exportsAddr uintptr) uintptr
 func GetExportsAddressOfNames(modAddr uintptr, exportsAddr uintptr) uintptr
 func GetExportsAddressOfOrdinals(modAddr uintptr, exportsAddr uintptr) uintptr
 func GetTrampoline(stubAddr uintptr) uintptr
+func ExecIndirectSyscall(ssn uint16, trampoline uintptr, argh ...uintptr) uint32
 
 // Memory function stubs
 

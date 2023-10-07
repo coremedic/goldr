@@ -6,7 +6,7 @@ require (
 	github.com/enceve/crypto v0.0.0-20160707101852-34d48bb93815
 	github.com/spf13/cobra v1.7.0
 	github.com/ulikunitz/xz v0.5.11
-	golang.org/x/sys v0.0.0-20210903071746-97244b99971b
+	golang.org/x/sys v0.13.0
 )
 
 require (
