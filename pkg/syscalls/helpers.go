@@ -1,4 +1,6 @@
-package evasion
+package syscalls
+
+import "github.com/coremedic/goldr/internal/types"
 
 // Assembly function stubs
 
@@ -9,12 +11,14 @@ func GetExportsNumberOfNames(exportsAddr uintptr) uint32
 func GetExportsAddressOfFunctions(modAddr uintptr, exportsAddr uintptr) uintptr
 func GetExportsAddressOfNames(modAddr uintptr, exportsAddr uintptr) uintptr
 func GetExportsAddressOfOrdinals(modAddr uintptr, exportsAddr uintptr) uintptr
+func GetTrampoline(stubAddr uintptr) uintptr
+func ExecIndirectSyscall(ssn uint16, trampoline uintptr, argh ...uintptr) uint32
 
 // Memory function stubs
 
 func RVA2VA(moduleBase uintptr, rva uint32) uintptr
-func ReadDwordAtOffset(start uintptr, offset uint32) DWORD
-func ReadWordAtOffset(start uintptr, offset uint32) WORD
+func ReadDwordAtOffset(start uintptr, offset uint32) types.DWORD
+func ReadWordAtOffset(start uintptr, offset uint32) types.WORD
 func ReadByteAtOffset(start uintptr, offset uint32) uint8
 
 // ReadCStringAt reads a null-terminated ANSI string from memory.

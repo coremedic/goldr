@@ -1,19 +1,17 @@
-package evasion
+package syscalls
 
-import "fmt"
-
-var (
-	ntdllBase uintptr = GetNtdllBase()
-)
+import "github.com/coremedic/goldr/internal/types"
 
 /*
 * Syscall structure
  */
 type Syscall struct {
+	// Direct or Indirect syscall
+	Method string `default:"indirect"`
 	// Name of syscall i.e. "NtVirtualProtect"
 	Name string
 	// Relative Virtual Address of syscall
-	RVA DWORD
+	RVA types.DWORD
 	// Virtual Address of syscall (pointer)
 	VA uintptr
 	// System Service Number (Syscall ID)
@@ -22,19 +20,9 @@ type Syscall struct {
 	TrampolinePtr uintptr
 }
 
-func Debug() {
-	modExpDirAddr := GetModuleExportsDirAddr(ntdllBase)
-	expNumNames := GetExportsNumberOfNames(modExpDirAddr)
-	expAddrNames := GetExportsAddressOfNames(ntdllBase, modExpDirAddr)
-	expAddrFunc := GetExportsAddressOfFunctions(ntdllBase, modExpDirAddr)
-	expAddrOrd := GetExportsAddressOfOrdinals(ntdllBase, modExpDirAddr)
-
-	fmt.Printf("Ntdll: 0x%x\nModuleExportsDirAddr: 0x%x\nExportsNumberOfNames: %d\nExportsAddressOfNames: 0x%x\nExportsAddressOfFunctions: 0x%x\nExportsAddressOfOrdinals: 0x%x\n", ntdllBase, modExpDirAddr, expNumNames, expAddrNames, expAddrFunc, expAddrOrd)
-}
-
 // adapted from github.com/f1zm0/acheron/
 // Parses syscalls in Ntdll
-func ParseSyscalls() []*Syscall {
+func parseNtSyscalls() []*Syscall {
 	modExpDirAddr := GetModuleExportsDirAddr(ntdllBase)
 	expNumNames := GetExportsNumberOfNames(modExpDirAddr)
 	expAddrNames := GetExportsAddressOfNames(ntdllBase, modExpDirAddr)
